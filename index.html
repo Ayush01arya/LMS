@@ -93,6 +93,30 @@
                 padding: 20px;
             }
         }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        @media screen and (max-width: 768px) {
+
+
+            .main-content {
+                padding: 10px; /* Less padding for mobile */
+            }
+
+            .card {
+                padding: 15px; /* Adjust card padding for mobile */
+            }
+        }
     </style>
 </head>
 <body>
@@ -112,7 +136,16 @@
 
     <div class="container hidden" id="dashboardContainer">
         <h2>Welcome to Laundry Management System!</h2>
-
+<div class="main-content">
+    <div class="card">
+        <h2>Main Section</h2>
+        <p>Tfgh</p>
+    </div>
+    <div class="card">
+        <h2>Another Section</h2>
+        <p>Tfgh</p>
+    </div>
+</div>
     </div>
 
     <script>
