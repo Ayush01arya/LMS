@@ -13,16 +13,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh; /* Ensure minimum height for smaller screens */
         }
 
         .container {
             background-color: white;
-            padding: 40px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 100%;
+            width: 90%; /* Adjusted width for better responsiveness */
             max-width: 400px;
             animation: slideIn 0.5s ease-out forwards;
         }
@@ -81,79 +80,445 @@
             display: none;
         }
 
-        @media screen and (max-width: 600px) {
-            body {
-                justify-content: flex-start;
-                height: auto;
-                padding-top: 20px;
-            }
+        #dashboardContainer {
+            display: none; /* Updated to ensure it starts hidden */
+        }
 
+        span {
+            color: blue;
+            cursor: pointer;
+        }
+
+        .fade-in {
+            animation: fadeInAnimation ease 1s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeInAnimation {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Media Query for smaller screens */
+        @media screen and (max-width: 600px) {
             .container {
-                margin-top: 20px;
+                width: 80%; /* Adjust width for smaller screens */
+                padding: 15px; /* Adjust padding for smaller screens */
+            }
+        }
+        #dashboardContainer {
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 80%;
                 padding: 20px;
             }
         }
 
-        .main-content {
-            padding: 20px;
+        span {
+            color: blue;
+            cursor: pointer;
         }
 
-        .card {
-            background-color: white;
-            padding: 20px;
+        .fade-in {
+            animation: fadeInAnimation ease 1s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeInAnimation {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #homeContainer {
+            text-align: center;
+        }
+
+        .laundry-input-container {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
+        }
+
+        .laundry-input {
+            flex-grow: 1;
+        }
+
+        #laundryHistory {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #laundryHistory li {
+            background-color: #f1f8e9;
+            margin-bottom: 8px;
+            padding: 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+}
 
-        @media screen and (max-width: 768px) {
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    flex-basis: calc(50% - 20px); /* Adjust card width here, minus the gap */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
 
+.card h3 {
+    margin-top: 0;
+}
 
-            .main-content {
-                padding: 10px; /* Less padding for mobile */
-            }
+@media (max-width: 768px) {
+    .card {
+        flex-basis: calc(100% - 20px); /* Full width on smaller screens */
+    }
+}
+.logout-button {
+    background-color: #f44336; /* Red color for the logout button */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Padding to make the button bigger */
+    border: none; /* Remove the default border */
+    border-radius: 5px; /* Slightly rounded corners for a modern look */
+    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+    font-size: 16px; /* Make the text a bit larger */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+    outline: none; /* Remove the outline to make it look better on focus */
+}
 
-            .card {
-                padding: 15px; /* Adjust card padding for mobile */
-            }
-        }
+.logout-button:hover {
+    background-color: #d32f2f; /* Darker red on hover for feedback */
+    transform: scale(1.05); /* Slightly increase the size on hover */
+}
+
+.logout-button:focus {
+    box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.5); /* Add a shadow to indicate focus, matching the hover color */
+}
     </style>
 </head>
 <body>
     <div class="container" id="loginContainer">
-        <h2>Laundry Management Login</h2>
+        <h2>Login</h2>
         <div class="input-field">
-            <label for="hostelId">Hostel ID:</label>
-            <input type="text" id="hostelId" placeholder="Enter Hostel ID">
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" placeholder="Enter Email">
         </div>
         <div class="input-field">
-            <label for="phoneNumber">Phone Number:</label>
-            <input type="tel" id="phoneNumber" placeholder="Enter Phone Number">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" placeholder="Enter Password">
         </div>
-        <button class="login-button" onclick="showDashboard()">Login</button>
+        <button class="login-button" onclick="loginUser()">Login</button>
+        <p>Don't have an account? <span onclick="showRegister()">Register</span></p>
     </div>
 
+    <!-- Registration Container -->
+    <div class="container hidden" id="registerContainer">
+        <h2>Register</h2>
+        <div class="input-field">
+            <label for="registerEmail">Email:</label>
+            <input type="email" id="registerEmail" placeholder="Enter Email">
+        </div>
+        <div class="input-field">
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" placeholder="Enter Password">
+        </div>
+        <button class="login-button" onclick="showRegister()">Register</button>
+        <p>Already have an account? <span onclick="showLogin()">Login</span></p>
+    </div>
 
-    <div class="container hidden" id="dashboardContainer">
-        <h2>Welcome to Laundry Management System!</h2>
-<div class="main-content">
+<div id="homeContainer" class="container hidden">
+    <h1>Welcome to Your Dashboard</h1>
+
+    <p id="welcomeMessage">Welcome, user!</p>
+  <div class="cards-container">
     <div class="card">
-        <h2>Main Section</h2>
-        <p>Tfgh</p>
+        <h3>Laundry Tips</h3>
+        <p>Remember to check pockets before washing clothes!</p>
     </div>
     <div class="card">
-        <h2>Another Section</h2>
-        <p>Tfgh</p>
+        <h3>Did You Know?</h3>
+        <p>Washing in cold water can save energy and prevent shrinkage.</p>
+    </div>
+    <div class="card">
+        <h3>Stain Removal</h3>
+        <p>Act quickly! Treat stains as soon as possible for best results.</p>
+    </div>
+    <div class="card">
+        <h3>Fabric Care</h3>
+        <p>Separate laundry by fabric type to extend the life of your clothes.</p>
     </div>
 </div>
-    </div>
+<br>
+
+    <button class="logout-button" onclick="logoutUser()">Logout</button>
+
+
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
 
     <script>
-        function showDashboard() {
 
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('dashboardContainer').style.display = 'block';
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyClTWy8xGS2s2PmCfbLLuS1Y0A43Yg4v5k",
+  authDomain: "laundrymanagementsystem-gehu.firebaseapp.com",
+  databaseURL: "https://laundrymanagementsystem-gehu-default-rtdb.firebaseio.com",
+  projectId: "laundrymanagementsystem-gehu",
+  storageBucket: "laundrymanagementsystem-gehu.appspot.com",
+  messagingSenderId: "372557495750",
+  appId: "1:372557495750:web:bebdaa02564e9f2b5606c7",
+  measurementId: "G-G0JMWJ35CP"
+        };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// Ensure there's only one function definition for registerUser
+function registerUser() {
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            console.log("User registered successfully");
+            // Show success message or redirect user
+            // For example: alert("Registration successful!");
+            showLogin(); // Assuming this function switches view to the login form
+        })
+        .catch((error) => {
+            console.error("Error registering user: ", error.message);
+            alert("Error registering user: " + error.message); // Display error to the user
+        });
+}function showRegister() {
+    // Assuming you have an HTML element with the ID 'registerContainer' for the registration form
+    // and 'loginContainer' for the login form.
+    document.getElementById('registerContainer').style.display = 'block'; // Show registration form
+    document.getElementById('loginContainer').style.display = 'none'; // Hide login form
+}
+
+        // Function to handle user login
+        function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("User logged in successfully");
+                    // The UI update is handled by onAuthStateChanged
+                })
+                .catch((error) => {
+                    console.error("Error logging in: ", error.message);
+                    alert("Error logging in: " + error.message); // Display error to the user
+                });
         }
+
+        // Function to handle user logout
+        function logoutUser() {
+            auth.signOut().then(() => {
+                console.log("User signed out");
+                // The UI update is handled by onAuthStateChanged
+            }).catch((error) => {
+                console.error("Error signing out: ", error);
+            });
+        }
+
+        // Function to add laundry item
+        function addLaundryItem() {
+            const item = document.getElementById('laundryItem').value;
+            if (!item.trim()) return; // Prevent adding empty items
+
+            const userId = auth.currentUser.uid;
+
+            db.collection("laundryItems").add({
+                userId: userId,
+                item: item,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then((docRef) => {
+                console.log("Laundry item added with ID: ", docRef.id);
+                document.getElementById('laundryItem').value = ''; // Clear the input field
+                fetchLaundryHistory(); // Update the laundry history
+            })
+            .catch((error) => {
+                console.error("Error adding laundry item: ", error);
+            });
+        }
+
+        // Function to fetch laundry history
+        function fetchLaundryHistory() {
+            const userId = auth.currentUser.uid;
+            const laundryHistoryList = document.getElementById('laundryHistory');
+            laundryHistoryList.innerHTML = ''; // Clear current list
+
+            db.collection("laundryItems").where("userId", "==", userId).orderBy("timestamp", "desc")
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const itemElement = document.createElement("li");
+                    itemElement.textContent = `${data.item} - ${data.timestamp ? data.timestamp.toDate().toLocaleString() : "Timestamp not available"}`;
+                    laundryHistoryList.appendChild(itemElement);
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting laundry history:", error);
+            });
+        }
+
+
+function updateUserInterface(user) {
+    if (user) {
+        document.getElementById('loginContainer').classList.add('hidden');
+        document.getElementById('registerContainer').classList.add('hidden');
+        const homeContainer = document.getElementById('homeContainer');
+        homeContainer.classList.remove('hidden');
+
+        homeContainer.classList.add('fade-in');
+
+        // Set welcome message
+        const welcomeMessage = `Welcome, ${user.email}!`;
+        document.getElementById('welcomeMessage').textContent = welcomeMessage;
+
+        fetchLaundryHistory();
+    } else {
+        document.getElementById('homeContainer').classList.add('hidden');
+        showLogin();
+    }
+}
+auth.onAuthStateChanged(user => {
+    console.log("Auth state changed:", user);
+    updateUserInterface(user); // Update UI based on user's auth state
+});
+
+    </script>
+
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
+
+    <script>
+
+
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyClTWy8xGS2s2PmCfbLLuS1Y0A43Yg4v5k",
+    authDomain: "laundrymanagementsystem-gehu.firebaseapp.com",
+    databaseURL: "https://laundrymanagementsystem-gehu-default-rtdb.firebaseio.com",
+    projectId: "laundrymanagementsystem-gehu",
+    storageBucket: "laundrymanagementsystem-gehu.appspot.com",
+    messagingSenderId: "372557495750",
+    appId: "1:372557495750:web:bebdaa02564e9f2b5606c7",
+    measurementId: "G-G0JMWJ35CP"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+function showLogin() {
+  // Logic to show the login form
+  document.getElementById('loginContainer').style.display = 'block';
+  document.getElementById('registerContainer').style.display = 'none';
+  // Hide other containers if necessary
+  document.getElementById('homeContainer').style.display = 'none';
+
+  // Add any additional logic needed for showing the login form
+}
+
+function showRegister() {
+  // Logic to show the registration form
+  document.getElementById('registerContainer').style.display = 'block';
+  document.getElementById('loginContainer').style.display = 'none';
+  // Add any additional logic needed for showing the registration form
+}
+
+
+  function registerUser() {
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        console.log("User registered successfully");
+        // Optional: Show success message or redirect
+        alert("User registered successfully!");
+        updateUserInterface(userCredential.user);
+      })
+      .catch((error) => {
+        console.error("Error registering user: ", error.message);
+        alert("Error registering user: " + error.message);
+      });
+  }
+
+  // Function to handle user login
+  function loginUser() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        console.log("User logged in successfully");
+        updateUserInterface(userCredential.user);
+      })
+      .catch((error) => {
+        console.error("Error logging in: ", error.message);
+        alert("Error logging in: " + error.message);
+      });
+  }
+
+  // Function to handle user logout
+  function logoutUser() {
+    auth.signOut().then(() => {
+      console.log("User signed out");
+      updateUserInterface(null);
+    }).catch((error) => {
+      console.error("Error signing out: ", error);
+    });
+  }
+
+  // Update User Interface based on user state
+  function updateUserInterface(user) {
+    if (user) {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('registerContainer').style.display = 'none';
+      document.getElementById('homeContainer').style.display = 'block';
+      // Set welcome message or other UI changes
+    } else {
+      document.getElementById('homeContainer').style.display = 'none';
+      document.getElementById('loginContainer').style.display = 'block'; // Show login by default or based on your UI logic
+    }
+  }
+
+  // Listen for auth state changes
+  auth.onAuthStateChanged(user => {
+    console.log("Auth state changed:", user);
+    updateUserInterface(user);
+  });
+
+
+
     </script>
 </body>
 </html>
