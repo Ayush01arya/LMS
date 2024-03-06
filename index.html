@@ -244,27 +244,35 @@
 
 <div id="homeContainer" class="container hidden">
     <h1>Welcome to Your Dashboard</h1>
-
+<div class="container hidden" id="addLaundryForm">
+    <h2>Add Laundry Item</h2>
+    <form id="laundryForm">
+        <input type="text" id="itemName" placeholder="Item Name" required>
+        <input type="number" id="itemQuantity" placeholder="Quantity" required>
+        <button type="submit">Add Item</button>
+    </form>
+</div>
     <p id="welcomeMessage">Welcome, user!</p>
   <div class="cards-container">
     <div class="card">
-        <h3>Laundry Tips</h3>
+        <h3>Your Details</h3>
         <p>Remember to check pockets before washing clothes!</p>
     </div>
     <div class="card">
-        <h3>Did You Know?</h3>
+        <h3>Add Laundry </h3>
         <p>Washing in cold water can save energy and prevent shrinkage.</p>
     </div>
     <div class="card">
-        <h3>Stain Removal</h3>
+        <h3>Complaint</h3>
         <p>Act quickly! Treat stains as soon as possible for best results.</p>
     </div>
     <div class="card">
-        <h3>Fabric Care</h3>
+        <h3>History </h3>
         <p>Separate laundry by fabric type to extend the life of your clothes.</p>
     </div>
 </div>
 <br>
+
 
     <button class="logout-button" onclick="logoutUser()">Logout</button>
 
@@ -276,6 +284,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
 
     <script>
+function showAddLaundryForm() {
+    const formContainer = document.getElementById('addLaundryForm');
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    if (formContainer.classList.contains('hidden')) {
+        formContainer.classList.remove('hidden');
+        dashboardContainer.classList.add('hidden'); // Optionally hide the dashboard
+    } else {
+        formContainer.classList.add('hidden');
+        dashboardContainer.classList.remove('hidden'); // Optionally show the dashboard again
+    }
+}
 
         // Your web app's Firebase configuration
         var firebaseConfig = {
