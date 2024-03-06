@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+</head>
+<body>
+  <header>
+    <!-- Display user's profile name here -->
+    <a href="test.html">LOGIN Page</a>
+    <h1 id="profileName"></h1>
+  </header>
+  
+  <!-- Other content of the home page goes here -->
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.3/firebase-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.3/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.3/firebase-database-compat.js"></script>
+
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyDmGMXdJ28PBTD987d7j7AttjoHxJ7z-lk",
+    authDomain: "lms-gehu.firebaseapp.com",
+    projectId: "lms-gehu",
+    storageBucket: "lms-gehu.appspot.com",
+    messagingSenderId: "979024588330",
+    appId: "1:979024588330:web:c03b49f18b9b24c67e1d53"
+};
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get current user's profile name and display it
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        firebase.database().ref('users/' + user.uid + '/full_name').once('value')
+          .then((snapshot) => {
+            const fullName = snapshot.val();
+            document.getElementById('profileName').textContent = 'Welcome, ' + fullName + '!';
+          })
+          .catch((error) => {
+            console.error('Error getting user profile name:', error);
+          });
+      } else {
+        console.log('No user signed in.');
+      }
+    });
+  </script>
+</body>
+</html>
