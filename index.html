@@ -291,7 +291,7 @@
             <label for="registerPassword">Password:</label>
             <input type="password" id="registerPassword" placeholder="Enter Password">
         </div>
-        <button class="login-button" onclick="showRegister()">Register</button>
+        <button class="login-button" onclick="registerUser()">Register</button>
         <p>Already have an account? <span onclick="showLogin()">Login</span></p>
     </div>
 
@@ -399,151 +399,8 @@ function showAddLaundryForm() {
     }
 }
 
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-            apiKey: "AIzaSyClTWy8xGS2s2PmCfbLLuS1Y0A43Yg4v5k",
-  authDomain: "laundrymanagementsystem-gehu.firebaseapp.com",
-  databaseURL: "https://laundrymanagementsystem-gehu-default-rtdb.firebaseio.com",
-  projectId: "laundrymanagementsystem-gehu",
-  storageBucket: "laundrymanagementsystem-gehu.appspot.com",
-  messagingSenderId: "372557495750",
-  appId: "1:372557495750:web:bebdaa02564e9f2b5606c7",
-  measurementId: "G-G0JMWJ35CP"
-        };
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Ensure there's only one function definition for registerUser
-function registerUser() {
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-
-    auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            console.log("User registered successfully");
-            // Show success message or redirect user
-            // For example: alert("Registration successful!");
-            showLogin(); // Assuming this function switches view to the login form
-        })
-        .catch((error) => {
-            console.error("Error registering user: ", error.message);
-            alert("Error registering user: " + error.message); // Display error to the user
-        });
-}function showRegister() {
-    // Assuming you have an HTML element with the ID 'registerContainer' for the registration form
-    // and 'loginContainer' for the login form.
-    document.getElementById('registerContainer').style.display = 'block'; // Show registration form
-    document.getElementById('loginContainer').style.display = 'none'; // Hide login form
-}
-
-        // Function to handle user login
-        function loginUser() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    console.log("User logged in successfully");
-                    // The UI update is handled by onAuthStateChanged
-                })
-                .catch((error) => {
-                    console.error("Error logging in: ", error.message);
-                    alert("Error logging in: " + error.message); // Display error to the user
-                });
-        }
-
-        // Function to handle user logout
-        function logoutUser() {
-            auth.signOut().then(() => {
-                console.log("User signed out");
-                // The UI update is handled by onAuthStateChanged
-            }).catch((error) => {
-                console.error("Error signing out: ", error);
-            });
-        }
-
-        // Function to add laundry item
-        function addLaundryItem() {
-            const item = document.getElementById('laundryItem').value;
-            if (!item.trim()) return; // Prevent adding empty items
-
-            const userId = auth.currentUser.uid;
-
-            db.collection("laundryItems").add({
-                userId: userId,
-                item: item,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then((docRef) => {
-                console.log("Laundry item added with ID: ", docRef.id);
-                document.getElementById('laundryItem').value = ''; // Clear the input field
-                fetchLaundryHistory(); // Update the laundry history
-            })
-            .catch((error) => {
-                console.error("Error adding laundry item: ", error);
-            });
-        }
-
-        // Function to fetch laundry history
-        function fetchLaundryHistory() {
-            const userId = auth.currentUser.uid;
-            const laundryHistoryList = document.getElementById('laundryHistory');
-            laundryHistoryList.innerHTML = ''; // Clear current list
-
-            db.collection("laundryItems").where("userId", "==", userId).orderBy("timestamp", "desc")
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const itemElement = document.createElement("li");
-                    itemElement.textContent = `${data.item} - ${data.timestamp ? data.timestamp.toDate().toLocaleString() : "Timestamp not available"}`;
-                    laundryHistoryList.appendChild(itemElement);
-                });
-            })
-            .catch((error) => {
-                console.log("Error getting laundry history:", error);
-            });
-        }
-
-
-function updateUserInterface(user) {
-    if (user) {
-        document.getElementById('loginContainer').classList.add('hidden');
-        document.getElementById('registerContainer').classList.add('hidden');
-        const homeContainer = document.getElementById('homeContainer');
-        homeContainer.classList.remove('hidden');
-
-        homeContainer.classList.add('fade-in');
-
-        // Set welcome message
-        const welcomeMessage = `Welcome, ${user.email}!`;
-        document.getElementById('welcomeMessage').textContent = welcomeMessage;
-
-        fetchLaundryHistory();
-    } else {
-        document.getElementById('homeContainer').classList.add('hidden');
-        showLogin();
-    }
-}
-auth.onAuthStateChanged(user => {
-    console.log("Auth state changed:", user);
-    updateUserInterface(user); // Update UI based on user's auth state
-});
-
-    </script>
-
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
-
-    <script>
-
-
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
+      // Your web app's Firebase configuration (Keep only one instance)
+var firebaseConfig = {
     apiKey: "AIzaSyClTWy8xGS2s2PmCfbLLuS1Y0A43Yg4v5k",
     authDomain: "laundrymanagementsystem-gehu.firebaseapp.com",
     databaseURL: "https://laundrymanagementsystem-gehu-default-rtdb.firebaseio.com",
@@ -552,92 +409,86 @@ auth.onAuthStateChanged(user => {
     messagingSenderId: "372557495750",
     appId: "1:372557495750:web:bebdaa02564e9f2b5606c7",
     measurementId: "G-G0JMWJ35CP"
-  };
+};
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 function showLogin() {
-  // Logic to show the login form
-  document.getElementById('loginContainer').style.display = 'block';
-  document.getElementById('registerContainer').style.display = 'none';
-  // Hide other containers if necessary
-  document.getElementById('homeContainer').style.display = 'none';
-
-  // Add any additional logic needed for showing the login form
+    document.getElementById('loginContainer').style.display = 'block';
+    document.getElementById('registerContainer').style.display = 'none';
+    document.getElementById('homeContainer').style.display = 'none';
 }
 
 function showRegister() {
-  // Logic to show the registration form
-  document.getElementById('registerContainer').style.display = 'block';
-  document.getElementById('loginContainer').style.display = 'none';
-  // Add any additional logic needed for showing the registration form
+    document.getElementById('registerContainer').style.display = 'block';
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('homeContainer').style.display = 'none';
 }
 
-
-  function registerUser() {
+function registerUser() {
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
 
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log("User registered successfully");
-        // Optional: Show success message or redirect
-        alert("User registered successfully!");
-        updateUserInterface(userCredential.user);
-      })
-      .catch((error) => {
-        console.error("Error registering user: ", error.message);
-        alert("Error registering user: " + error.message);
-      });
-  }
+    if (!email || !password) {
+        alert("Email and password must be provided.");
+        return;
+    }
 
-  // Function to handle user login
-  function loginUser() {
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            console.log("User registered successfully");
+            alert("Registration successful");
+            updateUserInterface(userCredential.user); // Update UI or navigate to another page
+        })
+        .catch((error) => {
+            console.error("Error registering user: ", error.message);
+            alert("Error registering user: " + error.message);
+        });
+}
+
+
+function loginUser() {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
     auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log("User logged in successfully");
-        updateUserInterface(userCredential.user);
-      })
-      .catch((error) => {
-        console.error("Error logging in: ", error.message);
-        alert("Error logging in: " + error.message);
-      });
-  }
+        .then((userCredential) => {
+            console.log("User logged in successfully");
+            updateUserInterface(userCredential.user);
+        })
+        .catch((error) => {
+            console.error("Error logging in: ", error.message);
+            alert("Error logging in: " + error.message);
+        });
+}
 
-  // Function to handle user logout
-  function logoutUser() {
+function logoutUser() {
     auth.signOut().then(() => {
-      console.log("User signed out");
-      updateUserInterface(null);
+        console.log("User signed out");
+        updateUserInterface(null);
     }).catch((error) => {
-      console.error("Error signing out: ", error);
+        console.error("Error signing out: ", error);
     });
-  }
+}
 
-  // Update User Interface based on user state
-  function updateUserInterface(user) {
+function updateUserInterface(user) {
     if (user) {
-      document.getElementById('loginContainer').style.display = 'none';
-      document.getElementById('registerContainer').style.display = 'none';
-      document.getElementById('homeContainer').style.display = 'block';
-      // Set welcome message or other UI changes
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('registerContainer').style.display = 'none';
+        document.getElementById('homeContainer').style.display = 'block';
+        // Optionally, update home container content or show a welcome message
     } else {
-      document.getElementById('homeContainer').style.display = 'none';
-      document.getElementById('loginContainer').style.display = 'block'; // Show login by default or based on your UI logic
+        showLogin();
     }
-  }
+}
 
-  // Listen for auth state changes
-  auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(user => {
     console.log("Auth state changed:", user);
     updateUserInterface(user);
-  });
+});
+
 function displayUserInfo(userData) {
     const userInfoSection = document.getElementById('laundry-tips-info');
     // Assuming userData has properties such as name, email, etc.
