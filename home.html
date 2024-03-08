@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Management</title>
+    <link rel="stylesheet" href="Css/home.css">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #d40606;
+            width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="homeContainer" class="container hidden">
+    <h1>Welcome to Your Dashboard</h1>
+    <div class="cards-container">
+        <div class="card" id="laundry-tips-card">
+            <h3>Profile 🔲</h3>
+            <p>Efficient, user-friendly online platform for hassle-free laundry services management.</p>
+        </div>
+        <div class="card" id="did-you-know-card">
+            <h3>Add Laundry</h3>
+            <p>Schedule, track, and manage services efficiently online</p>
+        </div>
+        <div class="card" id="stain-removal-card">
+            <h3>Complaint Raise</h3>
+            <p>Submit laundry service issues for quick resolution and customer satisfaction.</p>
+        </div>
+        <div class="card" id="fabric-care-card">
+            <h3>History</h3>
+            <p>Track, analyze, and optimize laundry operations for efficiency and growth.</p>
+        </div>
+    </div>
+
+    <div id="laundry-tips-info" class="info-page" style="display: none;">
+        <h2>Profile</h2>
+        <div id="userDetails"></div>
+        <button class="back-button">Back</button>
+    </div>
+
+    <div id="did-you-know-info" class="info-page" style="display: none;">
+        <h2>Add Laundry</h2>
+        <p> </p>
+        <button class="back-button">Back</button>
+    </div>
+
+    <div id="stain-removal-info" class="info-page" style="display: none;">
+        <h2>Complaint Raise</h2>
+        <p>No Complaint</p>
+        <button class="back-button">Back</button>
+    </div>
+
+    <div id="fabric-care-info" class="info-page" style="display: none;">
+        <h2>History</h2>
+        <p>No Laundry</p>
+        <button class="back-button">Back</button>
+    </div>
+
+    <br>
+
+    <button class="logout-button" onclick="logoutUser()">Logout</button>
+
+    <!-- Modal message box -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p id="logoutMessage" class="message"></p>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <script>
+        // Your Firebase configuration
+        var firebaseConfig = {
+          apiKey: "AIzaSyDmGMXdJ28PBTD987d7j7AttjoHxJ7z-lk",
+    authDomain: "lms-gehu.firebaseapp.com",
+    databaseURL: "https://lms-gehu-default-rtdb.firebaseio.com",
+    projectId: "lms-gehu",
+    storageBucket: "lms-gehu.appspot.com",
+    messagingSenderId: "979024588330",
+    appId: "1:979024588330:web:c03b49f18b9b24c67e1d53"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const d = new Date();
+        const date_day = d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear();
+
+        // Function to fetch and display user details
+        function displayUserInfo(userId) {
+            const userDetailsDiv = document.getElementById('userDetails');
+            database.ref('users/' + userId).once('value').then(function (snapshot) {
+                const userData = snapshot.val();
+                if (userData) {
+                    userDetailsDiv.innerHTML = `
+                        <div class="user-info">
+                            <p>Name: ${userData.full_name}</p>
+                            <p>Email: ${userData.email}</p>
+                            <p>Phone Number: ${userData.phone_number}</p>
+                            <p>Hostel ID: ${userData.hostel_id}</p>
+                            <p>Date : ${date_day}</p>
+                            <!-- Add more fields as needed -->
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Function to add listeners to each card
+        function addCardListener(cardId, infoPageId) {
+            document.getElementById(cardId).addEventListener('click', function () {
+                document.querySelector('.cards-container').style.display = 'none';
+                document.getElementById(infoPageId).style.display = 'block';
+                if (infoPageId === 'laundry-tips-info') {
+                    // Display user details when profile section is clicked
+                    const userId = firebase.auth().currentUser.uid;
+                    displayUserInfo(userId);
+                }
+            });
+        }
+
+        // Function to add listeners to back buttons
+        function addBackButtonListener() {
+            document.querySelectorAll('.back-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    document.querySelector('.info-page').style.display = 'none'; // Hide any visible info page
+                    document.querySelector('.cards-container').style.display = 'flex';
+                    // Ensure all info pages are hidden when going back
+                    document.querySelectorAll('.info-page').forEach(page => {
+                        page.style.display = 'none';
+                    });
+                });
+            });
+        }
+
+        // Initialize card listeners
+        addCardListener('laundry-tips-card', 'laundry-tips-info');
+        addCardListener('did-you-know-card', 'did-you-know-info');
+        addCardListener('stain-removal-card', 'stain-removal-info');
+        addCardListener('fabric-care-card', 'fabric-care-info');
+
+        // Initialize back button listeners
+        addBackButtonListener();
+
+        function logoutUser() {
+            auth.signOut().then(() => {
+                // Show modal message
+                const modal = document.getElementById('myModal');
+                const message = document.getElementById('logoutMessage');
+                message.textContent = "Logged out successfully";
+                modal.style.display = "block";
+
+                // Hide the modal after 5 seconds
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 90000);
+
+                // Redirect to login page
+                window.location.replace("index.html");
+                updateUserInterface(null);
+
+            }).catch((error) => {
+                alert("Error signing out: ", error);
+            });
+        }
+
+        function updateUserInterface(user) {
+            if (user) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('registerContainer').style.display = 'none';
+                document.getElementById('homeContainer').style.display = 'block';
+                // Optionally, update home container content or show a welcome message
+            } else {
+                window.location.replace("index.html");
+            }
+        }
+
+        auth.onAuthStateChanged(user => {
+            console.log("Auth state changed:", user);
+            updateUserInterface(user);
+        });
+    </script>
+
+</body>
+</html>
